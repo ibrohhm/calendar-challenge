@@ -1,0 +1,92 @@
+body {
+  background-color: #29292c;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#main{
+  width: fit-content;
+}
+
+#header{
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+
+  #month{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #nav{
+    display: flex;
+
+    .nav{
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      #arrow-up{
+        width: 0; 
+        height: 0; 
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid white;
+        cursor: pointer;
+      }
+
+      #arrow-down {
+        width: 0; 
+        height: 0; 
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid white;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+#content {
+  .days {
+    display: flex;
+
+    .day{
+      height: 50px;
+      width: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .dates{
+    display: flex;
+
+    .date{
+      height: 50px;
+      width: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+
+      &.off{
+        opacity: 20%;
+      }
+
+      &.today{
+        color: black;
+        background-color: #4cc2ff;
+      }
+
+      &:hover{
+        color: black;
+        background-color: white;
+      }
+    }
+  }
+}
