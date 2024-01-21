@@ -10,6 +10,11 @@
   let $month = document.getElementById("month")
   let $arrowUp = document.getElementById("arrow-up")
   let $arrowDown = document.getElementById("arrow-down")
+  let $buttonClose = document.getElementById("button-close")
+  let $buttonSave = document.getElementById("button-save")
+  let $modal = document.getElementById("modal")
+  let $modalDate = document.getElementById("modal-date")
+  let $modalNote = document.getElementById("modal-note")
 
   function getMonthLength(year, month) {
     let monthLength = MONTH_LENGTHS[month]
@@ -30,8 +35,25 @@
     }
   }
 
+  function formatDate(date) {
+    let curDate = new Date(date)
+    let curDay = curDate.getDate()
+    let curMonth = MONTHS[curDate.getMonth()]
+    let curYear = curDate.getFullYear()
+
+    return `${curDay} ${curMonth} ${curYear}`
+  }
+
   function isToday(year, month, day){
     return CURRENT_DATE.getDate() === day && CURRENT_DATE.getMonth() === month && CURRENT_DATE.getFullYear() === year
+  }
+
+  function saveNote(date, note){
+    localStorage.setItem(date, note);
+  }
+
+  function getNote(date){
+    return localStorage.getItem(date) || '';
   }
 
   function getCalendar(year, month) {
@@ -84,14 +106,18 @@
     let weeks = getCalendar(year, month)
     let $calendar = '<div class="days"><div class="day">Mo</div><div class="day">Tu</div><div class="day">We</div><div class="day">Th</div><div class="day">Fr</div><div class="day">Sa</div><div class="day">Su</div></div>'
     
+    console.log(localStorage)
     weeks.forEach(function(week){
       let $date = '<div class="dates">'
       week.forEach(function(date){
         classList = ['date']
+        note = getNote(date.date)
         if(!date.currentMonth) classList.push('off')
         if(isToday(year, month, date.day)) classList.push('today')
 
-        $date += `<div class="${classList.join(' ')}" data-date="${date.date}">${date.day}</div>`
+        $date += `<div class="${classList.join(' ')}" data-date="${date.date}">${date.day}`
+        if(note.length !== 0) $date += '<span>*</span>'
+        $date += `</div>`
       })
 
       $date += '</div>'
@@ -100,6 +126,18 @@
 
     $month.innerText = `${MONTHS[month]} ${year}`
     $content.innerHTML = $calendar
+
+    let $dates = document.getElementsByClassName("date");
+    Array.from($dates).forEach(function(date){
+      date.addEventListener('click', function(e){
+        curDate = e.target.dataset.date
+        console.log(curDate, e.target.dataset)
+        $modalDate.innerText = `Note - ${formatDate(curDate)}`
+        $modalNote.value = getNote(curDate)
+        $modal.dataset.date = curDate
+        $modal.style.display = 'block'
+      })
+    })
   }
 
   function nextMonth() {
@@ -131,4 +169,18 @@
   $arrowDown.addEventListener("click", function(){
     nextMonth()
   });
+
+  $buttonClose.addEventListener("click", function(){
+    $modal.dataset.date = ''
+    $modal.style.display = 'none'
+  })
+
+  $buttonSave.addEventListener("click", function(e){
+    curDate = $modal.dataset.date
+    saveNote(curDate, $modalNote.value)
+
+    $modal.dataset.date = ''
+    $modal.style.display = 'none'
+    generateCalendar(currentYear, currentMonth)
+  })
 })()
